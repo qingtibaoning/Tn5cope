@@ -11,7 +11,8 @@
 仓库自带一套完全人工合成的示例输入，可以先用它确认安装正确，再换成自己的文件。
 
 > [!IMPORTANT]
-> `examples/` 中的输入全部是人工合成的教学数据，不能用于任何生物学结论。下图仅用于
+> `examples/` 中的输入全部是人工合成的教学数据，不能用于任何生物学结论。湿实验指南
+> 包含经作者确认可公开的代表性凝胶和 Sanger 图片，仅用于教学与方法展示。下图仅用于
 > 展示预期输出，是不含原始序列的衍生可视化结果。
 
 <p align="center">
@@ -30,6 +31,14 @@
 
 Tn5cope 适合单个突变体的 Tail-PCR/Sanger 插入位点定位，**不是**用于 Tn-seq 丰度、
 基因必需性、显著性富集或表型因果证明的软件。
+
+## 湿实验流程指南
+
+如果还需要在运行 Tn5cope 前获得 Tn5 侧翼序列，可以阅读图文版
+**mhiTAIL-PCR 全流程与故障排查指南**：
+
+- [中文](https://qingtibaoning.github.io/Tn5cope/mhitail-pcr/zh-CN.html)
+- [English](https://qingtibaoning.github.io/Tn5cope/mhitail-pcr/)
 
 ## 第一次运行：先用合成示例
 
@@ -265,7 +274,8 @@ PowerShell 使用 `.\.venv\Scripts\Activate.ps1`。
 
 真实输入和输出应始终放在克隆仓库之外。项目自带的 `.gitignore` 会阻止常见序列、参考
 文件和结果格式被普通 Git 操作加入版本库，但它不是加密工具，也无法保护手动强制添加的
-文件。只有 `examples/` 下的人工合成模板适合纳入版本控制。
+文件。只有 `examples/` 下的人工合成模板，以及 `docs/` 下经作者确认可公开的教学材料，
+适合纳入版本控制。
 
 ## License
 
