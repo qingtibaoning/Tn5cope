@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tn5cope</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <p class="eyebrow">Clear signals, careful calls</p>
+      <h1>Tn5cope</h1>
+      <p class="lede">
+        Upload tail-PCR sequences together with a reference genome FASTA and matching GTF annotation,
+        then retrieve insertion coordinates, gene-level annotation, position-cluster tables, and a genome circle plot.
+      </p>
+    </section>
+
+    <section class="panel">
+      <form action="/analyze" method="post" enctype="multipart/form-data" class="form-grid">
+        <label>
+          <span>Job name</span>
+          <input type="text" name="job_name" value="tail_pcr_run" />
+        </label>
+
+        <label class="full">
+          <span>Reference genome FASTA</span>
+          <input type="file" name="genome_fasta" accept=".fa,.fasta,.fna" required />
+        </label>
+
+        <label class="full">
+          <span>Reference annotation GTF</span>
+          <input type="file" name="gtf_file" accept=".gtf" required />
+        </label>
+
+        <label class="full">
+          <span>Operon annotation TSV</span>
+          <input type="file" name="operon_file" accept=".tsv,.txt" />
+          <small>
+            Optional. Requires operon_id plus at least one gene identifier column:
+            locus_tag, gene_id, gene_code, or gene_name.
+          </small>
+        </label>
+
+        <label class="full">
+          <span>Tn5 structure profile</span>
+          <select name="tn5_structure_profile">
+            <option value="unknown" selected>Unknown (conservative)</option>
+            <option value="no_known_regulatory_elements">No known regulatory elements</option>
+            <option value="bidirectional_outward_promoters">Bidirectional outward promoters</option>
+            <option value="transcriptional_terminator">Transcriptional terminator</option>
+            <option value="bidirectional_promoters_and_terminator">Bidirectional promoters and terminator</option>
+          </select>
+          <small>Select only what is documented for the exact transposon construct.</small>
+        </label>
+
+        <label class="full">
+          <span>Query file</span>
+          <input type="file" name="query_file" accept=".csv,.txt,.fa,.fasta,.fna" />
+          <small>Optional. First column of CSV is treated as the query sequence column.</small>
+        </label>
+
+        <label class="full">
+          <span>Pasted sequence(s)</span>
+          <textarea
+            name="sequences_text"
+            rows="10"
+            placeholder="Paste one sequence, one sequence per line, or FASTA-formatted records here."
+          ></textarea>
+          <small>Optional. If both file upload and pasted text are provided, sequences are combined and deduplicated.</small>
+        </label>
+
+        <button type="submit">Run Analysis</button>
+      </form>
+    </section>
+
+    {% if error %}
+    <section class="panel error">
+      <h2>Run Failed</h2>
+      <p>{{ error }}</p>
+    </section>
+    {% endif %}
+
+    {% if result %}
+    <section class="panel success">
+      <h2>Run Complete</h2>
+      <div class="result-meta">
+        <p><strong>Job ID:</strong> {{ result.job_id }}</p>
+        <p><strong>Job name:</strong> {{ result.job_name }}</p>
+        <p><strong>Query count:</strong> {{ result.sequence_count }}</p>
+        <p><strong>Genome:</strong> {{ result.genome_name }}</p>
+        <p><strong>GTF:</strong> {{ result.gtf_name }}</p>
+        <p><strong>Operon TSV:</strong> {{ result.operon_name }}</p>
+        <p><strong>Tn5 structure:</strong> {{ result.tn5_structure_profile }}</p>
+      </div>
+      <div class="downloads">
+        <a href="/download/{{ result.job_id }}/{{ result.bundle }}">Download All Outputs (.zip)</a>
+        {% for file in result.files %}
+        <a href="/download/{{ result.job_id }}/{{ file }}">{{ file }}</a>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+  </main>
+</body>
+</html>

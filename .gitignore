@@ -1,0 +1,62 @@
+# Operating-system and editor files
+.DS_Store
+**/.DS_Store
+.idea/
+.vscode/
+~$*
+
+# Python environments, caches, and build artifacts
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Tn5cope runtime outputs
+runs/
+outputs/
+demo_output/
+results/
+
+# Keep all private/raw inputs in data/private (or, preferably, outside the repo).
+data/private/
+data/raw/
+
+# Common sequencing and reference formats. The synthetic examples below are
+# explicitly allowed back into Git.
+query.csv
+query.xlsx
+query*.csv
+query*.xlsx
+*.ab1
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+*.fna
+*.fa
+*.fasta
+*.gtf
+*.gff
+*.gff3
+*.gb
+*.gbk
+*.gbff
+*.mmi
+*.amb
+*.ann
+*.bwt
+*.pac
+*.sa
+*.nhr
+*.nin
+*.nsq
+
+# Only these artificial input templates belong in the public repository.
+!examples/
+!examples/**

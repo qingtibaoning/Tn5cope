@@ -1,0 +1,5 @@
+## Synthetic teaching-only annotation for Tn5cope
+synthetic_chromosome	Tn5cope	gene	121	300	.	+	.	gene_id "SYN001"; gene "demoA"; locus_tag "SYN_0001";
+synthetic_chromosome	Tn5cope	CDS	121	300	.	+	0	gene_id "SYN001"; gene "demoA"; locus_tag "SYN_0001"; product "synthetic demonstration protein A"; Ontology_term "GO:0003674"; go_function "molecular_function|0003674||IEA";
+synthetic_chromosome	Tn5cope	gene	341	520	.	-	.	gene_id "SYN002"; gene "demoB"; locus_tag "SYN_0002";
+synthetic_chromosome	Tn5cope	CDS	341	520	.	-	0	gene_id "SYN002"; gene "demoB"; locus_tag "SYN_0002"; product "synthetic demonstration protein B"; Ontology_term "GO:0003674"; go_function "molecular_function|0003674||IEA";

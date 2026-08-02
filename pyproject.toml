@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tn5cope"
+dynamic = ["version"]
+description = "Confidence-aware Tail-PCR/Sanger Tn5 insertion-site mapping, annotation, and clustering."
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+  { name = "qingtibaoning" },
+]
+requires-python = ">=3.9"
+dependencies = [
+  "matplotlib>=3.7.0",
+  "numpy>=1.24.0",
+  "pycirclize>=1.9.1",
+  "scipy>=1.10.0",
+  "scikit-learn>=1.3.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/qingtibaoning/Tn5cope"
+Repository = "https://github.com/qingtibaoning/Tn5cope"
+Issues = "https://github.com/qingtibaoning/Tn5cope/issues"
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0.0",
+]
+web = [
+  "fastapi>=0.115.0",
+  "uvicorn>=0.30.0",
+  "jinja2>=3.1.0",
+  "python-multipart>=0.0.9",
+]
+
+[project.scripts]
+tn5cope = "tn5cope.cli:run"
+tn5cope-web = "tn5cope.web:run"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.dynamic]
+version = { attr = "tn5cope.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+tn5cope = [
+  "templates/*.html",
+  "static/*.css",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

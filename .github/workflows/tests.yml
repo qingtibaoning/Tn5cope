@@ -1,0 +1,47 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.11", "3.12"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install Tn5cope and test dependencies
+        run: python -m pip install -e ".[dev,web]"
+
+      - name: Run automated tests
+        run: pytest -q
+
+      - name: Run the synthetic example
+        run: >-
+          tn5cope
+          --query-csv examples/demo/query.csv
+          --genome-fasta examples/demo/reference.fna
+          --gtf examples/demo/reference.gtf
+          --operon-tsv examples/demo/operons.tsv
+          --aligner internal
+          --output-dir demo_output
+          --output-prefix demo
+
+      - name: Check key example outputs
+        run: test -s demo_output/demo_main_results.tsv && test -s demo_output/demo.xlsx

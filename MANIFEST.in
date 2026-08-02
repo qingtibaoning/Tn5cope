@@ -1,0 +1,5 @@
+include README.md
+include README_CN.md
+include LICENSE
+recursive-include src/tn5cope/templates *.html
+recursive-include src/tn5cope/static *.css
