@@ -13,9 +13,7 @@ The repository includes a fully synthetic example dataset. Use it to confirm tha
 your installation works before switching to your own files.
 
 > [!IMPORTANT]
-> This public repository contains no raw experimental sequences, private
-> reference-genome files, or tabular analysis results. All inputs under
-> `examples/` are synthetic teaching data and must not be used to draw
+> All inputs under`examples/` are synthetic teaching data and must not be used to draw
 > biological conclusions. The figure below is a derived visualization included
 > only to demonstrate the expected output; it contains no raw sequence data.
 
