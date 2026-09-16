@@ -42,6 +42,104 @@ Tn5cope is designed to map Tail-PCR/Sanger insertion sites from individual
 mutants. It is **not** a tool for Tn-seq abundance analysis, gene-essentiality
 inference, enrichment significance testing, or proof of phenotypic causality.
 
+## How it works
+
+Tn5cope maps Tail-PCR/Sanger sequences to a reference genome, annotates insertion
+sites, and summarizes positional and functional patterns. The workflow below
+shows the current implementation and its default parameters.
+
+```text
+ ┌───────────────────────────────┐
+ │ Input                         │
+ │ Query sequences: CSV          │
+ │ Reference genome: FASTA       │
+ │ Gene / CDS annotations: GTF   │
+ └───────────────┬───────────────┘
+                 │
+                 ▼
+ ┌───────────────────────────────┐
+ │ Sequence preparation          │  Python standard library
+ │ Clean sequences; detect Tn5   │  Mosaic end: 19 bp
+ │ ends; generate flank options  │  Allowed mismatches: ≤2
+ │                               │  Minimum flank length: 20 bp
+ └───────────────┬───────────────┘
+                 │
+                 ▼
+ ┌───────────────────────────────┐
+ │ Reference mapping             │  --aligner auto:
+ │ Search both orientations      │  minimap2 → BLASTn → BWA
+ │ Retain competing placements   │  → built-in ungapped fallback
+ │                               │
+ │ External aligner settings     │  minimap2: -a --MD -N 50 -x sr
+ │                               │  BLASTn: -task blastn-short
+ │                               │          -dust no
+ │                               │  BWA: mem -a
+ └───────────────┬───────────────┘
+                 │
+                 ▼
+ ┌───────────────────────────────┐
+ │ Evaluate mapping confidence   │  Query coverage ≥90%
+ │ Compare best / second hits    │  Identity ≥98% for <60 bp
+ │ Resolve insertion junctions   │  Identity ≥95% for ≥60 bp
+ │                               │  Matched-base gap ≥2
+ │                               │  Alignment-score gap ≥2
+ └───────────────┬───────────────┘
+                 │
+                 ├── Unresolved ──► Junction-proximal rescue
+                 │                  Configured windows:
+                 │                  150 / 120 / 90 / 60 /
+                 │                  45 / 30 / 24 bp
+                 │                  Coverage: 100%
+                 │                  Identity: 100% below 45 bp;
+                 │                            ≥95% otherwise
+                 │                  Consistent junction required
+                 │                            │
+                 │◄──── Rescued unique hit ────┤
+                 │                            └── Still unresolved
+                 │                                → Review report
+                 ▼
+ ┌───────────────────────────────┐
+ │ Annotate insertion sites      │  Custom Python interval matching
+ │ CDS / gene_non_CDS /          │  Reference GTF gene/CDS records
+ │ intergenic                    │  1-based insertion coordinate
+ │                               │  0-based junction boundary
+ └───────────────┬───────────────┘
+                 │
+                 ▼
+ ┌───────────────────────────────┐
+ │ Rank intergenic candidates    │  Custom deterministic scoring
+ │ Evaluate flanking genes       │  Reporting window: ≤500 bp
+ │ by strand and distance        │  Optional: operon TSV
+ │                               │  Tn5 structure default: unknown
+ └───────────────┬───────────────┘
+                 │
+              ┌──┴─────────────────────────────┐
+              ▼                                ▼
+ ┌──────────────────────────┐   ┌──────────────────────────────┐
+ │ Positional clustering    │   │ Functional clustering        │
+ │ NumPy + scikit-learn     │   │ NumPy + SciPy                │
+ │                          │   │                              │
+ │ Circular distance matrix │   │ Expanded unique gene set     │
+ │ DBSCAN                   │   │ Binary annotation features   │
+ │ eps = 20,000 bp          │   │ Jaccard distance             │
+ │ min_samples = 2          │   │ Average-linkage clustering   │
+ │ metric = precomputed     │   │ Cut distance = 0.70          │
+ │                          │   │ Minimum named cluster =      │
+ │ One point per unique     │   │ 2 genes                      │
+ │ insertion coordinate     │   │                              │
+ └────────────┬─────────────┘   └──────────────┬───────────────┘
+              │                                │
+              └──────────────┬─────────────────┘
+                             ▼
+ ┌────────────────────────────────────────────────────────────┐
+ │ Visualization and export                                   │
+ │ Circular genome plots: pycirclize + Matplotlib             │
+ │ Functional heatmaps: Matplotlib + SciPy dendrogram         │
+ │ Genome density bins: 50 kb; PNG resolution: 220 dpi        │
+ │ TSV tables and Excel workbook: Python standard library     │
+ └────────────────────────────────────────────────────────────┘
+```
+
 ## Wet-lab workflow guide
 
 Need help obtaining the Tn5 flanking sequence before running Tn5cope? Read the
